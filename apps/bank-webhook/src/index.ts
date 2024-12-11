@@ -2,8 +2,18 @@ import express from "express";
 import db from "@repo/db/client";
 import z from "zod";
 const app = express();
-
 app.use(express.json())
+
+
+import cors from 'cors';
+
+
+app.use(cors({
+    origin: ['http://localhost:3001', 'http://localhost:3000'],
+    credentials: true,
+    methods: ['POST', 'GET', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept']
+}));
 
 app.post("/hdfcWebhook", async (req, res) => {
  
@@ -59,13 +69,14 @@ app.post("/hdfcWebhook", async (req, res) => {
         ]);
 
         res.json({
-            message: "Captured",
+            message: "Transaction Successfull",
             success: true
         })
     } catch(e) {
         console.error(e);
         res.status(411).json({
-            message: "Error while processing webhook"
+            message: "Error while processing ",
+            success : false
         })
     }
 

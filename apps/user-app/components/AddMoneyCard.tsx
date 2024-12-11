@@ -2,40 +2,34 @@
 import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
 import { Select } from "@repo/ui/select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TextInput } from "@repo/ui/textinput";
 import { createOnRampTransaction } from "../app/lib/actions/createOnrampTransaction";
-import { useRouter } from 'next/navigation';
 
 const SUPPORTED_BANKS = [{
     name: "HDFC Bank",
-    redirectUrl: "/HdfcPage"
+    redirectUrl: "http://localhost:3000/hdfc"
 }, {
     name: "Axis Bank",
-    redirectUrl: "https://www.axisbank.com/"
+    redirectUrl: "http://localhost:3000/axis"
 }];
 
 export const AddMoney = () => {
-    const router = useRouter();
+  
     const [redirectUrl, setRedirectUrl] = useState(SUPPORTED_BANKS[0]?.redirectUrl);
     const [provider, setProvider] = useState(SUPPORTED_BANKS[0]?.name || "");
     const [value, setValue] = useState(0)
     const [token, setToken] = useState("")
+    const [shouldRedirect, setShouldRedirect] = useState(false);
 
-
-
-    const handleRedirect = (url: string) => {
-      
-        if (url.startsWith('/')) {
-            router.push(`${url}?token=${token}&amount=${value}`);  // Pass token and amount as query params
-        } else {
-            // For external URLs, continue using window.open
-            window.open(url, '_blank');
+    useEffect(() => {
+        if (shouldRedirect && token && redirectUrl) {
+            window.open(`${redirectUrl}?token=${token}&amount=${value}`, '_blank');
+            setShouldRedirect(false);
         }
-    };
-      
-      
-      return <>
+    }, [shouldRedirect, token, redirectUrl, value]);
+
+    return <>
     <Card title="Add Money">
     <div className="w-full">
         <TextInput label={"Amount"} placeholder={"Amount"} onChange={(val) => {
@@ -44,6 +38,8 @@ export const AddMoney = () => {
         <div className="py-4 text-left">
             Bank
         </div>
+
+       
         <Select onSelect={(value) => {
             setRedirectUrl(SUPPORTED_BANKS.find(x => x.name === value)?.redirectUrl || "");
             setProvider(SUPPORTED_BANKS.find(x => x.name === value)?.name || "");
@@ -54,19 +50,18 @@ export const AddMoney = () => {
         <div className="flex justify-center pt-4">
             <Button onClick={async () => {
               const response  = await createOnRampTransaction(provider, value)
-              setToken(response.token || "")
-              handleRedirect(redirectUrl || "")
+             setToken(response?.token || "")
+              if (response?.message){
+                setToken(response.token || "")
+                setShouldRedirect(true)
+                }
             }}>
             Add Money
             </Button>
         </div>
     </div>
 </Card>
-<div className=" mt-4"><Card title="token" >
-    <div className="text-center mt-5">
-        {token}
-    </div>
-</Card></div>
+
 
 </>
 }
