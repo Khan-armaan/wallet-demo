@@ -12,7 +12,6 @@ interface ApiResponse {
 export default function HdfcPage() {
     const searchParams = useSearchParams();
     const [userId, setUserId] = useState('');
-    const [responseMsg, setResponseMsg] = useState('');
     const [timestamp, setTimestamp] = useState('');
     const { toast } = useToast()
     
@@ -41,13 +40,14 @@ export default function HdfcPage() {
                     withCredentials: true
                 }
             );
-            setResponseMsg(response.data.message);
+         
             toast({
                 title: response.data.message,
                 description: timestamp,
             });
             if (response.data.success) {
-                window.location.href = 'http://localhost:3001';
+                window.open('http://localhost:3001', '_blank');
+                window.close();
             }
         } catch (error) {
             if (error){
