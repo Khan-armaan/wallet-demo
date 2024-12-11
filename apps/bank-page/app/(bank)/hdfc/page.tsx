@@ -12,12 +12,14 @@ interface ApiResponse {
 export default function HdfcPage() {
     const searchParams = useSearchParams();
     const [userId, setUserId] = useState('');
+    const [responseMsg, setResponseMsg] = useState('');
     const [timestamp, setTimestamp] = useState('');
     const { toast } = useToast()
+    const [isLoading, setIsLoading] = useState(false)
     
     const token = searchParams.get('token') || '';
     const amount = searchParams.get('amount') || '';
-
+    const actualAmount = Number(amount) * 100
     useEffect(() => {
         setTimestamp(Date.now().toString());
     }, []);
@@ -25,12 +27,13 @@ export default function HdfcPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            setIsLoading(true)
             const response = await axios.post<ApiResponse>(
                 'http://localhost:3003/hdfcWebhook', 
                 {
                     token: token,
                     user_identifier: userId,
-                    amount: amount
+                    amount: actualAmount.toString()
                 },
                 {
                     headers: {
@@ -40,14 +43,13 @@ export default function HdfcPage() {
                     withCredentials: true
                 }
             );
-         
+            setResponseMsg(response.data.message);
             toast({
                 title: response.data.message,
                 description: timestamp,
             });
             if (response.data.success) {
-                window.open('http://localhost:3001', '_blank');
-                window.close();
+                window.location.href = 'http://localhost:3001';
             }
         } catch (error) {
             if (error){
@@ -71,7 +73,7 @@ export default function HdfcPage() {
     return (
         <div className="min-h-screen bg-gray-50 p-4">
             <div className="text-center mb-8">
-                <h1 className="text-2xl font-semibold text-gray-800">Axis Bank Transaction</h1>
+                <h1 className="text-2xl font-semibold text-gray-800">HDFC Bank Transaction</h1>
             </div>
 
             <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
@@ -104,9 +106,14 @@ export default function HdfcPage() {
 
                     <button 
                         type="submit"
-                        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+                        disabled={isLoading}
+                        className={`w-full py-2 px-4 rounded-md transition-colors ${
+                            isLoading 
+                            ? 'bg-blue-300 cursor-not-allowed' 
+                            : 'bg-blue-500 hover:bg-blue-600'
+                        } text-white`}
                     >
-                        Continue
+                        {isLoading ? (<span>Processing...</span>) : (<span>Continue</span>)}
                     </button>
                 </form>
 

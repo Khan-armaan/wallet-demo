@@ -4,6 +4,7 @@ import { BalanceCard } from "../../../components/BalanceCard";
 import { OnRampTransactions } from "../../../components/OnRampTransactions";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
+import { useEffect } from "react";
 
 
 
@@ -38,6 +39,7 @@ async function getOnRampTransactions() {
 export default async function() {
     const balance = await getBalance();
     const transactions = await getOnRampTransactions();
+    
 
     return <div className="w-screen">
         <div className="text-4xl text-[#6a51a6] pt-8 mb-8 font-bold">

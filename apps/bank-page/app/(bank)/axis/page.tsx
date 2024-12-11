@@ -12,13 +12,14 @@ interface ApiResponse {
 export default function HdfcPage() {
     const searchParams = useSearchParams();
     const [userId, setUserId] = useState('');
-    const [responseMsg, setResponseMsg] = useState('');
     const [timestamp, setTimestamp] = useState('');
     const { toast } = useToast()
     
     const token = searchParams.get('token') || '';
-    const amount = searchParams.get('amount') || '';
-
+    const amount  = searchParams.get('amount') || '';
+    const actualAmount = Number(amount) * 100
+    
+    console.log(actualAmount)
     useEffect(() => {
         setTimestamp(Date.now().toString());
     }, []);
@@ -31,7 +32,7 @@ export default function HdfcPage() {
                 {
                     token: token,
                     user_identifier: userId,
-                    amount: amount
+                    amount: actualAmount.toString()
                 },
                 {
                     headers: {
@@ -41,13 +42,14 @@ export default function HdfcPage() {
                     withCredentials: true
                 }
             );
-            setResponseMsg(response.data.message);
+         
             toast({
                 title: response.data.message,
                 description: timestamp,
             });
             if (response.data.success) {
-                window.location.href = 'http://localhost:3001';
+                window.open('http://localhost:3001', '_blank');
+                window.close();
             }
         } catch (error) {
             if (error){
@@ -71,7 +73,7 @@ export default function HdfcPage() {
     return (
         <div className="min-h-screen bg-gray-50 p-4">
             <div className="text-center mb-8">
-                <h1 className="text-2xl font-semibold text-gray-800">HDFC Bank Transaction</h1>
+                <h1 className="text-2xl font-semibold text-gray-800">Axis Bank Transaction</h1>
             </div>
 
             <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
