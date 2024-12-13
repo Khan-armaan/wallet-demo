@@ -28,16 +28,18 @@ async function getOnRampTransactions() {
             userId: Number(session?.user?.id)
         }
     });
-    return txns.map((t : any) => ({  // there will be multiple onRamp transactions for a single user
-        time: t.startTime,
-        amount: t.amount,
-        status: t.status,
-        provider: t.provider
-    }))
+    return txns
+        .map((t: any) => ({  // there will be multiple onRamp transactions for a single user
+            time: t.startTime,
+            amount: t.amount,
+            status: t.status,
+            provider: t.provider
+        }))
+        .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()); // Sort transactions by start time
 }
 
 export default async function() {
-    const balance = await getBalance();
+
     const transactions = await getOnRampTransactions();
     
 
@@ -50,8 +52,8 @@ export default async function() {
                 <AddMoney />
             </div>
             <div>
-                <BalanceCard amount={balance.amount} locked={balance.locked} />
-                <div className="pt-4">
+             
+                <div>
                     <OnRampTransactions transactions={transactions} />
                 </div>
             </div>

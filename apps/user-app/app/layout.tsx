@@ -5,6 +5,7 @@ import { Providers } from "../provider";
 import { AppbarClient } from "../components/AppbarClient";
 import { Toaster } from "@/components/ui/toaster"
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({
         <body className={inter.className}>
           <div className="min-w-screen min-h-screen bg-[#ebe6e6]">
             <AppbarClient />
+            
             {children}
             <Toaster />
           </div>

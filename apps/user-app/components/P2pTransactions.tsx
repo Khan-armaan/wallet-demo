@@ -1,13 +1,13 @@
 import { Card } from "@repo/ui/card"
 
-export const OnRampTransactions = ({
+export const P2pTransactions = ({
     transactions
 }: {
     transactions: {
         time: Date,
         amount: number,
-        status: string,
-        provider: string
+        user: string,
+        sign: string
     }[]
 }) => {
     if (!transactions.length) {
@@ -17,27 +17,25 @@ export const OnRampTransactions = ({
             </div>
         </Card>
     }
-    return <Card title="Recent Transactions">
-        <div className="pt-2 pl-3 pr-3" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+    return <Card title="Recent Transactions" >
+        <div className="pt-2 pl-3 pr-3"  style={{ maxHeight: '400px',width: '600px', overflowY: 'auto' }}>
             {transactions
                 .sort((a, b) => b.time.getTime() - a.time.getTime())
                 .map(t => <div className="flex justify-between">
                     <div className="mb-3">
                         <div className="text-sm ">
-                            Received INR
+                            {(t.sign === '+') ? "Received INR" : "Sent INR"}
                         </div>
                         <div className="text-slate-600 text-xs">
                             {t.time.toDateString()}
                         </div>
                         <div className="text-slate-600 text-xs">
-                            {t.status}
+                         {(t.sign === '+') ? "from" : "to"}   {t.user}
                         </div>
-                        <div className="text-slate-600 text-xs">
-                            {t.provider}
-                        </div>
+                       
                     </div>
                     <div className="flex flex-col justify-center">
-                        + Rs {t.amount / 100}
+                        {t.sign} Rs {t.amount / 100}
                     </div>
                 </div>)}
         </div>
