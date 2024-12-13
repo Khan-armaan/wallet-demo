@@ -3,6 +3,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useToast } from '@/hooks/use-toast';
 import {  useRouter } from 'next/navigation';
+import Link from 'next/link';
+
 
 
 
@@ -11,7 +13,7 @@ export default function CreateAccount() {
     const [email, setEmail] = useState('');
     const [number, setNumber] = useState('');
     const [password, setPassword] = useState('');
-    const [responseData, setResponseData] = useState<ApiResponse >({message: "", success: false, data: {}})
+    const [responseData, setResponseData] = useState<ApiResponse >({message: "", success: true, data: {}})
 
     const { toast } = useToast()
     const router = useRouter()
@@ -117,9 +119,9 @@ export default function CreateAccount() {
                 </form>
                 <p className="mt-2 text-center text-sm text-gray-600">
                     Already have an account?{' '}
-                    <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    <Link href="/signIn" className="font-medium text-indigo-600 hover:text-indigo-500">
                         Sign in
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>

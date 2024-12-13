@@ -46,6 +46,20 @@ app.post("/hdfcWebhook", async (req, res) => {
     })
   }
     try {
+        const balance = await db.balance.findUnique({
+            where: {
+                userId: Number(paymentInformation.userId)
+            }
+        })
+        if (!balance){
+           await db.balance.create({
+            data: {
+                userId: Number(paymentInformation.userId),
+                amount: 0,
+                locked: 0
+            }
+           })
+        }
         await db.$transaction([
             db.balance.updateMany({
                 where: {
@@ -53,7 +67,7 @@ app.post("/hdfcWebhook", async (req, res) => {
                 },
                 data: {
                     amount: {
-                        // You can also get this from your DB
+                     
                         increment: Number(paymentInformation.amount)
                     }
                 }

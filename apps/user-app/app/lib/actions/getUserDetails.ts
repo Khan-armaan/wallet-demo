@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "../auth"
 import prisma from "@repo/db/client"
 
+
 export default async function getUserDetails(){
     const session = await getServerSession(authOptions)
     const userId = parseInt(session?.user?.id as string)
@@ -17,6 +18,12 @@ export default async function getUserDetails(){
         const userInfo = await prisma.user.findUnique({
             where: {
                 id : userId
+            },
+            select: {
+                name: true,
+                email: true,
+                number: true,
+                id: true
             }
         })
        

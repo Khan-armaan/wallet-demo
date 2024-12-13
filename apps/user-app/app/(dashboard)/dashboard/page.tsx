@@ -12,7 +12,7 @@ interface userDetails {
   email: string | null;
   name: string | null;
   number: string;
-  password: string;
+ 
 }
 
 export default function DashboardPage() { 

@@ -50,7 +50,7 @@ export default function HdfcPage() {
             });
             if (response.data.success) {
                 window.location.href = 'http://localhost:3001';
-            }
+             }
         } catch (error) {
             if (error){
                 console.error("axios error")
