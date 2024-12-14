@@ -37,7 +37,7 @@ export const OnRampTransactions = ({
                         </div>
                     </div>
                     <div className="flex flex-col justify-center">
-                        + Rs {t.amount / 100}
+                        + Rs { t.amount ? (t.amount / 100).toFixed(2) : '0.00'}
                     </div>
                 </div>)}
         </div>

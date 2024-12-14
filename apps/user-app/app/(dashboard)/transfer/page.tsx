@@ -5,8 +5,13 @@ import { OnRampTransactions } from "../../../components/OnRampTransactions";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 
-
-
+interface Transaction {
+  time: string;
+  provider: string;
+  amount: number;
+  status: string
+  // add other properties as needed
+}
 
 async function getBalance() {
     const session = await getServerSession(authOptions);
@@ -35,13 +40,23 @@ async function getOnRampTransactions() {
             status: t.status,
             provider: t.provider
         }))
-        .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()); // Sort transactions by start time
+        .sort((a: Transaction, b: Transaction) => new Date(a.time).getTime() - new Date(b.time).getTime()); // Sort transactions by start time
 }
 
 export default async function() {
 
     const transactions = await getOnRampTransactions();
     
+    const sortedTransactions = transactions
+      .map((t: any): any => ({
+        time: t.time,
+        provider: t.provider,
+        amount: t.amount,
+        status: t.status
+      }))
+      .sort((a: Transaction, b: Transaction) => 
+        new Date(a.time).getTime() - new Date(b.time).getTime()
+      );
 
     return <div className="w-screen">
         <div className="text-4xl text-[#6a51a6] pt-8 mb-8 font-bold">
@@ -54,7 +69,7 @@ export default async function() {
             <div>
              
                 <div>
-                    <OnRampTransactions transactions={transactions} />
+                    <OnRampTransactions transactions={sortedTransactions} />
                 </div>
             </div>
         </div>
